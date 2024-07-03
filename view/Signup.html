@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense-Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="main.js" defer></script>
 </head>
 <body>
-    <form action="/user/Signup" method="POST">
-      Enter your Name:<input type="text" name="Name" required>
+    <form id="login-form">
+      Enter your Name:<input type="text" name="name" required>
       <br>Enter your Email:<input type="email" name="email" required>
       <br>Enter your Password:<input type="text" name="password" required>
       <br><button type="submit"> Submite</button>
