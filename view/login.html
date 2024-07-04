@@ -6,10 +6,13 @@
     <title>Login</title>
 </head>
 <body>
-    <form action="/user/login" method="POST">
-       Email:<input type="email" name="email">
-       <br>Password:<input type="text" name="password">
-       <button type="submit">submit</button>
+    <form onsubmit="login(event)">
+       Email: <input type="email" name="email" required>
+       <br>Password: <input type="password" name="password" required>
+       <button type="submit">Submit</button>
     </form>
+    <div id="errorMessage"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="Ftlogin.js"></script>
 </body>
 </html>

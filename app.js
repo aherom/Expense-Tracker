@@ -15,6 +15,8 @@ app.use(bodyparser.json());
 
 app.use(express.static(path.join(__dirname,'view')));
 
+app.use(express.static(path.join(__dirname,'public')));
+
 app.use('/user',login);
 
 app.use('/user',signup);

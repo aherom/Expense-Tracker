@@ -17,7 +17,7 @@ exports.filecheck = async (req, res) => {
     const record = await user.findOne({ where: { email: email } });
 
     if (record) {
-      return res.json({ exists: true, email: email });
+      return res.status(400).send(`${email} all ready exist `);
     }
 
     const newData = await user.create({
@@ -27,7 +27,7 @@ exports.filecheck = async (req, res) => {
     });
 
     console.log(newData);
-    res.send('<h1>Record Created Successfully</h1>');
+    res.status(400).send('Record Created Successfully');
 
   } catch (error) {
     console.log(error);
