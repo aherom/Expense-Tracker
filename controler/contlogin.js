@@ -1,21 +1,28 @@
 const user = require('../module/user');
+const bcrypt = require('bcrypt');
 
-exports.login = async(req,res)=>
-    {
-        console.log(req.body);
-       const respons = await user.findOne({where:{email:req.body.email}});
+exports.login = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { email, password } = req.body;
 
-          if(!respons)
-                      res.status(400).send('Email id not exist');
+    const userRecord = await user.findOne({ where: { email: email } });
 
-          else  if (respons.password !== req.body.password) { 
-            console.log('Incorrect password');
-            res.status(401).send('Incorrect password');
-        } else {
-            console.log(respons.id);
-            res.status(200).send('Login successful');
-        }
-                      
-        
+    if (!userRecord) {
+      return res.status(400).send('Email id does not exist');
     }
 
+    const passwordMatch = await bcrypt.compare(password, userRecord.password);
+
+    if (!passwordMatch) {
+      console.log('Incorrect password');
+      return res.status(401).send('Incorrect password');
+    }
+
+    console.log(userRecord.id);
+    res.status(200).send('Login successful');
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error processing request');
+  }
+};
