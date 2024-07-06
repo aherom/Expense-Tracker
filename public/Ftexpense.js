@@ -62,6 +62,51 @@ async function deleteExpense(id) {
         console.error('Error deleting expense:', error);
     }
 }
+const PremiumButton = document.getElementById('rzp-button1');
+PremiumButton.onclick =async ()=>{
+    console.log("hiii");
+    try{
+         const token = localStorage.getItem('token'); 
+         const response = await axios.get('/Premium/payment', {
+            headers: { "Authorization": `${token}` }
+            });
+            const options = {
+                "key": response.data.key_id,
+                "amount": response.data.order.amount,
+                "currency": "INR",
+                "name": "Your Company Name",
+                "description": "Test Transaction",
+                "order_id": response.data.order.id,
+                "handler": async function (response) {
+                    alert("Payment successful");
+                    // Add your post-payment logic here
+
+                    try {
+                        await axios.post('/Premium/success', {
+                            payment_id: response.razorpay_payment_id,
+                            order_id: response.razorpay_order_id
+                        }, {
+                            headers: { "Authorization": `${token}` }
+                        });
+                        console.log('Payment status updated');
+                    } catch (error) {
+                        console.error('Error updating payment status:', error);
+                    }
+                },
+                "prefill": {
+                    "name": "Your Name",
+                    "email": "your-email@example.com",
+                    "contact": "9999999999"
+                },
+               
+            };
+    
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+        } catch (error) {
+            console.error('Error initiating payment:', error);
+        }
+}
 
 // Load expenses when the page loads
 window.onload = loadExpenses;
