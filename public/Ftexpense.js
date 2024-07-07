@@ -62,6 +62,27 @@ async function deleteExpense(id) {
         console.error('Error deleting expense:', error);
     }
 }
+
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
+
+const token = localStorage.getItem('token');
+const isPremium = parseJwt(token).isPremium;
+if (isPremium) {
+  document.getElementById('rzp-button1').style.visibility = 'hidden';
+  document.getElementById('message').innerText="you are premium user";
+}
+else{
+
 const PremiumButton = document.getElementById('rzp-button1');
 PremiumButton.onclick =async ()=>{
     console.log("hiii");
@@ -78,17 +99,21 @@ PremiumButton.onclick =async ()=>{
                 "description": "Test Transaction",
                 "order_id": response.data.order.id,
                 "handler": async function (response) {
-                    alert("Payment successful");
+                    
                     // Add your post-payment logic here
 
                     try {
-                        await axios.post('/Premium/success', {
+                        const result =await axios.post('/Premium/success', {
                             payment_id: response.razorpay_payment_id,
                             order_id: response.razorpay_order_id
                         }, {
                             headers: { "Authorization": `${token}` }
                         });
-                        console.log('Payment status updated');
+                        alert("Payment successful");
+                         PremiumButton.style.visibility="hidden";
+                         document.getElementById('message').innerText="you are premium user";
+                        localStorage.setItem('token',result.data.token);
+
                     } catch (error) {
                         console.error('Error updating payment status:', error);
                     }
@@ -107,6 +132,6 @@ PremiumButton.onclick =async ()=>{
             console.error('Error initiating payment:', error);
         }
 }
-
+}
 // Load expenses when the page loads
 window.onload = loadExpenses;

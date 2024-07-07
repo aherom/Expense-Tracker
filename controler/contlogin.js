@@ -23,9 +23,12 @@ exports.login = async (req, res) => {
       return res.status(401).send('Incorrect password');
     }
          
-    // Generate JWT
-    const token = jwt.sign({ userid: userRecord.userid, email: userRecord.email }, JWT_SECRET);
-
+    const token = jwt.sign({ 
+      userid: userRecord.userid, 
+      email: userRecord.email, 
+      isPremium: userRecord.isPremium 
+    }, JWT_SECRET);
+    
     console.log(userRecord.id);
     res.status(200).json({ message: 'Login successful', token: token });
   } catch (error) {
