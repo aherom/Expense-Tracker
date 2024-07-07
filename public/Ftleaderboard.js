@@ -7,7 +7,7 @@ Leaderboard.onclick = async () => {
     });
 
     const data = response.data;
-    
+    console.log(data);
     const leaderboardContainer = document.createElement('div');
     
     const heading = document.createElement('h1');
@@ -18,7 +18,7 @@ Leaderboard.onclick = async () => {
   
     data.forEach(entry => {
       const li = document.createElement('li');
-      li.textContent = `Name:${entry.name} / Total Expense:${entry.totalExpense}`;
+      li.textContent = `Name:${entry.name} / Total Expense:${entry.totalamount}`;
       ul.appendChild(li);
     });
   

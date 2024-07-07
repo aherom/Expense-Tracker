@@ -79,3 +79,21 @@ exports.success = async (req, res) => {
         res.status(500).send('Error updating payment status');
     }
 }
+
+
+
+exports.Leaderboard = async(req, res)=>{
+    try {
+        const leaderboardData = await User.findAll({
+            attributes: [
+              'name',
+              'totalamount'
+            ],
+            order: [['totalamount', 'DESC']] // Order by total amount in descending order
+          });
+      return res.json(leaderboardData);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }

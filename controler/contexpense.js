@@ -1,5 +1,7 @@
 const Userexpense = require('../module/Expenstable');
 
+const User = require('../module/user');
+
 exports.add = async (req,res)=>
     {
         
@@ -17,7 +19,16 @@ exports.add = async (req,res)=>
                 description,
                 category,
                 userUserid: req.user.userid
-              })
+              });
+
+        const user = await User.findByPk(req.user.userid);
+
+        if (user) {
+        // Update the total amount
+          user.totalamount += parseInt(amount, 10);
+          await user.save();
+           }
+
     }
     
         res.status(201).send('Expense added successfully');
@@ -46,3 +57,6 @@ exports.delete = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 }    
+
+
+
