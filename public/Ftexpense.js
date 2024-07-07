@@ -1,3 +1,4 @@
+//add
 async function lsaveexpense(event) {
     event.preventDefault();
 
@@ -20,6 +21,7 @@ async function lsaveexpense(event) {
     }
 }
 
+//history
 async function loadExpenses() {
     try {
         const token = localStorage.getItem('token'); // Retrieve the token from local storage
@@ -55,9 +57,14 @@ async function loadExpenses() {
     }
 }
 
+//delete
 async function deleteExpense(id) {
     try {
-        await axios.post('/expense/delete', { id });
+        const token = localStorage.getItem('token');
+        await axios.post('/expense/delete', { id }, {
+            headers: {
+                "Authorization": `${token}`
+            }});
     } catch (error) {
         console.error('Error deleting expense:', error);
     }

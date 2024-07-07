@@ -8,7 +8,7 @@ const contexpense = require('../controler/contexpense');
 
 router.use('/add',authenticateToken,contexpense.add);
 router.use('/history',authenticateToken,contexpense.history);
-router.use('/delete',contexpense.delete );
+router.use('/delete',authenticateToken,contexpense.delete );
 
 
 module.exports=router;
