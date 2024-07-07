@@ -26,10 +26,14 @@ const User = sequelize.define('user',
                  },
         
         isPremium: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-    }         
+                     type: Sequelize.BOOLEAN,
+                     allowNull: false,
+                     defaultValue: false
+                  },
+          amount:{
+                    type:Sequelize.INTEGER,
+                    defaultValue: 0
+                }            
     }
 );
 

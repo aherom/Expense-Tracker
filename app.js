@@ -4,7 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyparser = require('body-parser');
 const path = require('path');
-const Razorpay = require('razorpay');
+const  Sequelize = require('sequelize');
 
 const sequelize = require('./util/dbconfig');
 const User = require('./module/user');
@@ -34,9 +34,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/user', login);
 app.use('/user', signup);
 app.use('/expense', expense);
-
 app.use('/Premium',premium);
-
+async function getUserExpenseLeaderboard(req, res) {
+    try {
+      const leaderboardData = await User.findAll({
+        attributes: [
+          
+          [Sequelize.col('user.name'), 'name'],
+          [Sequelize.fn('SUM', Sequelize.col('userexpenes.amount')), 'totalExpense'],
+        ],
+        include: {
+          model: UserExpense,
+          attributes: [],
+        },
+        group: ['userid'],
+        order: [[Sequelize.col('totalExpense'), 'DESC']],
+      });
+  
+      return res.json(leaderboardData);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+  
+  app.get('/Premium/Leaderboard', authenticateToken, getUserExpenseLeaderboard);
+  
 app.get('/', signup);
 
 sequelize.sync();

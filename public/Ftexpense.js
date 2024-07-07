@@ -14,7 +14,7 @@ async function lsaveexpense(event) {
         }, {
             headers: { "Authorization": `${token}` }
         });
-        loadExpenses(); // Reload expenses after adding a new one
+        loadExpenses(); 
     } catch (error) {
         console.error('Error adding expense:', error);
     }
@@ -42,7 +42,7 @@ async function loadExpenses() {
             deleteButton.textContent = 'Delete';
             deleteButton.onclick = async () => {
                 await deleteExpense(expense.id);
-                loadExpenses(); // Reload expenses after deletion
+                loadExpenses(); 
             };
             
             li.appendChild(deleteButton);
@@ -79,13 +79,14 @@ const token = localStorage.getItem('token');
 const isPremium = parseJwt(token).isPremium;
 if (isPremium) {
   document.getElementById('rzp-button1').style.visibility = 'hidden';
-  document.getElementById('message').innerText="you are premium user";
+  document.getElementById('message').innerHTML=`you are premium user
+  <button id="Leaderboard" >Leaderboard</button><br><div id="leaderboardDisplay"></div>`;
 }
 else{
 
 const PremiumButton = document.getElementById('rzp-button1');
 PremiumButton.onclick =async ()=>{
-    console.log("hiii");
+
     try{
          const token = localStorage.getItem('token'); 
          const response = await axios.get('/Premium/payment', {
