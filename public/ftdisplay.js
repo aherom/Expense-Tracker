@@ -5,65 +5,67 @@ document.getElementById('filter').onchange = () => {
     document.getElementById('year-picker').style.display = filter === 'year' ? 'block' : 'none';
     
     if (filter === 'all') {
-        loadExpenses(filter);
+        loadExpenses(filter, null, 1, getPerPage());
     }
 };
 
 document.getElementById('daily-date').onchange = () => {
     const date = document.getElementById('daily-date').value;
-    loadExpenses('date', date);
+    loadExpenses('date', date, 1, getPerPage());
 };
 
 document.getElementById('monthly-date').onchange = () => {
     const date = document.getElementById('monthly-date').value;
-    loadExpenses('month', date);
+    loadExpenses('month', date, 1, getPerPage());
 };
 
 document.getElementById('yearly-date').onchange = () => {
     const year = document.getElementById('yearly-date').value;
-    loadExpenses('year', year);
+    loadExpenses('year', year, 1, getPerPage());
 };
 
-async function loadExpenses(filter, date) {
+async function loadExpenses(filter, date, page, perPage) {
     try {
-        const token = localStorage.getItem('token');
-        let response;
-       
-            response = await axios.get('/expense/history', {
-                headers: { "Authorization": `${token}` }
-            });
-        
-       console.log(response.data);
-
-        const expenses = response.data;
-        const expensesDiv = document.getElementById('priveios expense');
-        expensesDiv.innerHTML = '';
-
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/expense/history', {
+        headers: { "Authorization": `${token}` },
+        params: { filter, date, page, perPage }
+      });
+  
+      const { expenses, totalExpenses } = response.data;
+      const expensesDiv = document.getElementById('priveios expense');
+      expensesDiv.innerHTML = '';
+  
+      if (Array.isArray(expenses)) {
         const ul = document.createElement('ul');
-
         expenses.forEach(expense => {
-            if (filter === 'all' || filterCriteria(expense, filter, date)) {
+          if (filter === 'all' || filterCriteria(expense, filter, date)) {
             const li = document.createElement('li');
             li.textContent = `${expense.amount} - ${expense.description} - ${expense.category}`;
-
+  
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.onclick = async () => {
-                await deleteExpense(expense.id);
-                loadExpenses(filter, date);
+              await deleteExpense(expense.id);
+              loadExpenses(filter, date, page, perPage);
             };
-
+  
             li.appendChild(deleteButton);
             ul.appendChild(li);
-        }//if
+          }
         });
-    
+  
         expensesDiv.appendChild(ul);
-        
+      } else {
+        console.error('Unexpected response format for expenses:', response.data);
+      }
+  
+      setupPagination(totalExpenses, page, perPage, filter, date);
     } catch (error) {
-        console.error('Error fetching expenses:', error);
+      console.error('Error fetching expenses:', error);
     }
-}
+  }
+  
 
 async function deleteExpense(id) {
     try {
@@ -76,21 +78,44 @@ async function deleteExpense(id) {
     }
 }
 
-
 function filterCriteria(expense, filter, date) {
     const expenseDate = new Date(expense.createdAt);
   
     switch (filter) {
-      case 'date':
-        return expenseDate.toISOString().split('T')[0] === date;
-      case 'month':
-        return `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}` === date;
-      case 'year':
-        return expenseDate.getFullYear() === parseInt(date);
-      default:
-        return true;
+        case 'date':
+            return expenseDate.toISOString().split('T')[0] === date;
+        case 'month':
+            return `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}` === date;
+        case 'year':
+            return expenseDate.getFullYear() === parseInt(date);
+        default:
+            return true;
     }
 }
 
-// Load all expenses on page load
-loadExpenses('all');
+function setupPagination(totalExpenses, currentPage, perPage, filter, date) {
+    const paginationDiv = document.getElementById('pagination');
+    paginationDiv.innerHTML = '';
+
+    const totalPages = Math.ceil(totalExpenses / perPage);
+
+    for (let page = 1; page <= totalPages; page++) {
+        const button = document.createElement('button');
+        button.textContent = page;
+        button.onclick = () => loadExpenses(filter, date, page, perPage);
+        if (page === currentPage) {
+            button.disabled = true;
+        }
+        paginationDiv.appendChild(button);
+    }
+}
+
+function getPerPage() {
+    const screenWidth = window.innerWidth;
+    if (screenWidth > 1200) return 40;
+    if (screenWidth > 800) return 20;
+    return 10;
+}
+
+// Initial load
+loadExpenses('all', null, 1, getPerPage());

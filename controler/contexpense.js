@@ -44,13 +44,23 @@ exports.add = async (req, res) => {
 
 exports.history = async (req, res) => {
     try {
-        const expenses = await Userexpense.findAll({ where: { userUserid: req.user.userid } });
-        res.json(expenses);
+        const { page = 1, perPage = 10 } = req.query; // Default values if not provided
+        const offset = (page - 1) * perPage;
+        const limit = parseInt(perPage, 10);
+
+        const { count, rows: expenses } = await Userexpense.findAndCountAll({
+            where: { userUserid: req.user.userid },
+            offset,
+            limit
+        });
+
+        res.json({ totalExpenses: count, expenses });
     } catch (error) {
         console.error('Error fetching expense history:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 exports.delete = async (req, res) => {
     const { id } = req.body;
