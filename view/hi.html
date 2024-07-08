@@ -25,10 +25,31 @@
     </form>
     <button id="rzp-button1" >getPremium</button>
     <div id="message"></div>
+    <div id="filter-select">
+        <select id="filter">
+            <option value="all">All</option>
+            <option value="date">Date</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+        </select>
+    </div>
+
+    <div id="date-picker" style="display: none;">
+        <input type="date" id="daily-date">
+    </div>
+    <div id="month-picker" style="display: none;">
+        <input type="month" id="monthly-date">
+    </div>
+    <div id="year-picker" style="display: none;">
+        <input type="number" id="yearly-date" min="2000" max="2099" step="1" value="2024">
+    </div>
+
+    
     <div id="priveios expense"></div>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="Ftexpense.js"></script>
     <script src="Ftleaderboard.js"></script>
+    <script src="ftdisplay.js"></script>
 </body>
 </html>

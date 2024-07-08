@@ -21,41 +21,6 @@ async function lsaveexpense(event) {
     }
 }
 
-//history
-async function loadExpenses() {
-    try {
-        const token = localStorage.getItem('token'); // Retrieve the token from local storage
-        const response = await axios.get('/expense/history', {
-            headers: { "Authorization": `${token}` }
-        });
-
-        const expenses = response.data;
-
-        const expensesDiv = document.getElementById('priveios expense');
-        expensesDiv.innerHTML = ''; // Clear existing content
-
-        const ul = document.createElement('ul');
-
-        expenses.forEach(expense => {
-            const li = document.createElement('li');
-            li.textContent = `${expense.amount} - ${expense.description} - ${expense.category}`;
-            
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.onclick = async () => {
-                await deleteExpense(expense.id);
-                loadExpenses(); 
-            };
-            
-            li.appendChild(deleteButton);
-            ul.appendChild(li);
-        });
-
-        expensesDiv.appendChild(ul);
-    } catch (error) {
-        console.error('Error fetching expenses:', error);
-    }
-}
 
 //delete
 async function deleteExpense(id) {
@@ -141,5 +106,5 @@ PremiumButton.onclick =async ()=>{
         }
 }
 }
-// Load expenses when the page loads
-window.onload = loadExpenses;
+
+
