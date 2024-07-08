@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const User = require('../module/user');
 const Forgotpassword = require('../module/forgotpassword');
@@ -21,7 +22,7 @@ const bcrypt = require('bcrypt');
            service: 'gmail',
            auth: {
               user: 'mitlab104@gmail.com', 
-              pass: 'eheb gofa hzdp hwim' 
+              pass:  process.env.pass 
               }
     });
  
