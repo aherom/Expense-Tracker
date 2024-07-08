@@ -1,21 +1,25 @@
 require('dotenv').config();
 
-
+const nodemailer = require('nodemailer');
 const express = require('express');
 const bodyparser = require('body-parser');
 const path = require('path');
 const  Sequelize = require('sequelize');
 
+
 const sequelize = require('./util/dbconfig');
 const User = require('./module/user');
 const UserExpense = require('./module/Expenstable');
 const Order = require('./module/order');
+const Forgotpassword = require('./module/forgotpassword')
+
 const { authenticateToken } = require('./middleware/auth');
 
 const signup = require('./router/signup');
 const login = require('./router/login');
 const expense = require('./router/expenese');
 const premium = require('./router/premium')
+const password = require('./router/password');
 
 const app = express();
 
@@ -36,6 +40,9 @@ app.use('/user', signup);
 app.use('/expense', expense);
 app.use('/Premium',premium);
   
+app.use('/password',password);
+
+app.use('/reset',password);
 app.get('/', signup);
 
 sequelize.sync();

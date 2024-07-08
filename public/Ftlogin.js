@@ -15,3 +15,33 @@ async function login(event) {
             error.response.data : 'An unexpected error occurred';
     }
 }
+
+function showForgotPassword() {
+    const loginForm = document.querySelector('form');
+    const forgotPassword = document.getElementById('forgotPassword');
+
+    loginForm.style.display = 'none';
+    forgotPassword.style.display = 'block';
+}
+  
+
+
+async function forgotPassword(event) {
+    try {
+       
+        event.preventDefault(); 
+
+        const forgotEmail = document.getElementById('forgotEmail').value;
+       console.log(forgotEmail);
+       const response = await axios.post('/password/forgotpassword', {
+        email: forgotEmail 
+      });
+
+        alert(`${response.data}  ${forgotEmail}`)
+        console.log(response.data);
+        window.location.href = 'login.html';
+    } catch (error) {
+       
+        console.error('Error:', error.response ? error.response.data : 'An unexpected error occurred');
+    }
+}

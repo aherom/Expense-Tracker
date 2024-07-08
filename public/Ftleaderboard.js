@@ -2,6 +2,7 @@ const Leaderboard = document.getElementById('Leaderboard');
 
 Leaderboard.onclick = async () => {
   try {
+    const token = localStorage.getItem('token');
     const response = await axios.get('/Premium/Leaderboard', {
       headers: { "Authorization": `${token}` }
     });
