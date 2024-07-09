@@ -31,7 +31,7 @@ const bcrypt = require('bcrypt');
          to: req.body.email,
          subject: 'Password Reset Request',
          text: 'This is a password reset request message.',
-         html: `<a href="http://localhost:3000/reset/password/${userRecord.userid}">Reset password</a>`,
+         html: `<a href="http://3.26.217.185:3000/${userRecord.userid}">Reset password</a>`,
      };
  
      transporter.sendMail(mailOptions, (error, info) => {
