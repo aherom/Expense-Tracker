@@ -7,7 +7,7 @@ const JWT_SECRET = 'your_secret_key'; // Replace with your actual secret key
 
 exports.login = async (req, res) => {
   try {
-    console.log(req.body);
+     
     const { email, password } = req.body;
 
     const userRecord = await user.findOne({ where: { email: email } });

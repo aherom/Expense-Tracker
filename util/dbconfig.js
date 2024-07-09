@@ -1,10 +1,11 @@
+
 const Sequelize = require('sequelize');
 
 
-const sequelize = new Sequelize('expense','root','S3cure#1',
+const sequelize = new Sequelize(process.env.dtabasename,process.env.dbuser,process.env.dbpassword,
     {
            dialect:'mysql',
-           host:'localhost'
+           host:process.env.dbhost
     }
 );
 
