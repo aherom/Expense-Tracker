@@ -108,33 +108,31 @@ PremiumButton.onclick =async ()=>{
 }
 
 async function download() {
-    console.log('hi');
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
 
     try {
         const response = await axios.get('/download', {
-            headers: { "Authorization": `${token}` }
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: 'blob'  // Important for downloading files
         });
 
         if (response.status === 201) {
-            // The backend is essentially sending a download link
-            // which if we open in browser, the file would download
-            var a = document.createElement("a");
-            a.href = response.data.fileUrl;
-            a.download = 'myexpense.csv';
-            a.click();
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'myexpense.csv');
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
         } else {
-            throw new Error(response.data.message);
+            throw new Error(response.data.message || 'Failed to download file');
         }
-    } catch (err) {
-        showError(err);
+    } catch (error) {
+        console.error('Download error:', error);
+        // Handle error display or logging
     }
 }
 
-function showError(error) {
-    console.error(error);
-   
-}
 
 
 
