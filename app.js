@@ -42,7 +42,7 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'view')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'filedata')));
+app.use(express.static(path.join(__dirname, 'controler','filedata')));
 
 app.use('/user', login);
 app.use('/user', signup);

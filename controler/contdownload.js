@@ -1,5 +1,5 @@
 const UserExpense = require('../module/Expenstable');
-const ExpenseFile = require('../module/file')
+const ExpenseFile = require('../module/file');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
@@ -10,31 +10,32 @@ exports.download = async (req, res) => {
             where: { userUserid: req.user.userid }
         });
 
-        //console.log(dataa);
-
+      
         const filedataPath = path.join(__dirname, 'filedata');
         if (!fs.existsSync(filedataPath)) {
             fs.mkdirSync(filedataPath, { recursive: true });
         }
 
+       
         const fileName = `expenses_${moment().format('YYYYMMDD_HHmmss')}.csv`;
         const fullFilePath = path.join(filedataPath, fileName);
 
+       
         const csvData = dataa.rows.map(expense => {
             return `${expense.createdAt.toDateString().split("GMT+0530")[0]},${expense.amount},${expense.category},${expense.description}`;
-
         }).join('\n');
 
+        
         fs.writeFileSync(fullFilePath, csvData);
 
         
-        const filePath = `D:\\MEAN\\Expense-Tracker\\controler\\filedata\\${fileName}`;  
-             await ExpenseFile.create({
-                userIddata: req.user.userid, 
-                fileUrl: filePath
-                 });
+        await ExpenseFile.create({
+            userIddata: req.user.userid, 
+            fileUrl: fullFilePath
+        });
 
-                 res.status(201).json({ fileUrl: `controler/filedata/${fileName}` });
+       
+        res.status(201).json({ fileUrl: `controler/filedata/${fileName}` });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
