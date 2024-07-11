@@ -107,33 +107,37 @@ PremiumButton.onclick =async ()=>{
 }
 }
 
+
 async function download() {
     const token = localStorage.getItem('token');
 
     try {
         const response = await axios.get('/download', {
-            headers: { Authorization: `Bearer ${token}` },
-            responseType: 'blob'  // Important for downloading files
+            headers: { Authorization: token }
         });
 
-        if (response.status === 201) {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+        if (response.status === 200) {
+            const expenses = response.data.expenses;
+
+            
+            const csvData = expenses.map(expense => {
+                return `${expense.createdAt},${expense.amount},${expense.category},${expense.description}`;
+            }).join('\n');
+
+           
+            const blob = new Blob([csvData], { type: 'text/csv' });
+
+           
             const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'myexpense.csv');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'myexpenses.csv');
             document.body.appendChild(link);
             link.click();
-            link.parentNode.removeChild(link);
+            document.body.removeChild(link); 
         } else {
-            throw new Error(response.data.message || 'Failed to download file');
+            throw new Error(response.data.message || 'Failed to fetch expenses');
         }
     } catch (error) {
         console.error('Download error:', error);
-        // Handle error display or logging
     }
 }
-
-
-
-
-    
